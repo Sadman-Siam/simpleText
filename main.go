@@ -46,7 +46,9 @@ func main() {
 				row++
 				col = 0
 			} else if event.Key() == tcell.KeyRight {
+				if col < len(text[row]){
 				col++
+				}
 			} else if event.Key() == tcell.KeyLeft {
 				if col > 0 {
 				col--
@@ -54,14 +56,31 @@ func main() {
 			} else if event.Key() == tcell.KeyUp {
 				if row > 0 {
 					row--
+					if !(col < len(text[row])){
+						col = len(text[row])
+					}
 				}
 			} else if event.Key() == tcell.KeyDown {
 				if row < len(text)-1 {
 					row++
+					if !(col < len(text[row])){
+						col = len(text[row])
+					}
 				}
 			} else if event.Key() == tcell.KeyBackspace || event.Key() == tcell.KeyBackspace2 {
 				if len(text) > 0 {
-					text[row] = text[row][:len(text[row])-1] 
+					if len(text[row]) > 0{
+					text[row] = text[row][:len(text[row])-1]
+					col--
+					} else if len(text[row]) == 0 && len(text) > row {
+						temp_row:= row
+						for row < len(text)-1 {
+							text[row] = text[row+1]	
+							row++
+						}
+					text = text[:len(text)-1]
+					row = temp_row
+					}
 				}
 			}
 		case *tcell.EventResize:
